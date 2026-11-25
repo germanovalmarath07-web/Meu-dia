@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meu Dia</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#050505">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Meu Dia">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#050505;--card:#111418;--ink:#F5FAFF;--mut:#8A99A8;--line:#232A33;--grape:#8FD3FF;--mint:#FFFFFF;--onacc:#04121C;--manha:#FFFFFF;--tarde:#8FD3FF;--noite:#3B9EE8}
+
+:root[data-theme="light"]{color-scheme:light;--bg:#FFFFFF;--card:#F1F8FF;--ink:#05080B;--mut:#5A6B7A;--line:#D5E6F5;--grape:#7CC8FF;--mint:#05080B;--onacc:#05080B;--manha:#05080B;--tarde:#7CC8FF;--noite:#2B8FE0}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.4}
+main{max-width:520px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+h1{font-size:2.3rem;font-weight:800;line-height:1.05;margin:0;letter-spacing:-.02em}
+.date{color:var(--mut);margin:6px 0 0;font-size:.95rem}
+.ring{position:relative;width:96px;height:96px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--grape);filter:drop-shadow(0 0 5px var(--grape));transition:stroke-dashoffset .5s ease,stroke .3s}
+.ring.full .fg{stroke:var(--mint)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:1.3rem;font-weight:800}
+.msg{margin:18px 0 0;padding:14px 16px;border-radius:20px 20px 20px 4px;background:var(--grape);color:var(--onacc);font-weight:600}
+.streak{opacity:.75;font-weight:400}
+.sec{margin-top:26px}
+.sec h2{display:flex;align-items:center;gap:8px;font-size:1.15rem;margin:0 0 10px;font-weight:800}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block}
+.task{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px 10px 10px 12px;margin-bottom:8px;transition:border-color .2s,opacity .2s}
+.task.next{border-color:var(--grape);box-shadow:0 0 0 4px color-mix(in srgb,var(--grape) 22%,transparent)}
+.task.done{opacity:.55}
+.task.done .nm{text-decoration:line-through}
+.chk{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);background:transparent;color:var(--onacc);font-size:1.1rem;cursor:pointer;flex:none;display:grid;place-items:center;padding:0;transition:background .15s,border-color .15s,transform .15s}
+.chk:active{transform:scale(.88)}
+.done .chk{background:var(--grape);border-color:var(--grape)}
+.emo{font-size:1.4rem}
+.info{flex:1;min-width:0}
+.nm{font-weight:600;overflow-wrap:anywhere}
+.tm{color:var(--mut);font-size:.85rem}
+.tag{background:var(--grape);color:var(--onacc);border-radius:999px;font-size:.72rem;padding:1px 8px;margin-left:6px;font-weight:600}
+.del{background:none;border:0;color:var(--mut);font-size:1.3rem;cursor:pointer;padding:6px 10px;border-radius:10px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--grape);outline-offset:2px}
+.empty{color:var(--mut);margin:0 0 8px;font-size:.95rem}
+.add{margin-top:30px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px}
+.add h2{margin:0 0 12px;font-size:1.15rem;font-weight:800}
+.row{display:flex;gap:8px;margin-bottom:10px}
+input[type=text],input[type=time]{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+input[type=text]{flex:1}
+.emos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.emos button{font-size:1.3rem;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:4px 8px;cursor:pointer}
+.emos button.on{border-color:var(--grape);background:var(--card)}
+.go{width:100%;font:inherit;font-weight:800;font-size:1rem;background:var(--grape);color:var(--onacc);border:0;border-radius:14px;padding:13px;cursor:pointer}
+.go:active{transform:scale(.98)}
+.foot{display:flex;justify-content:space-between;margin-top:22px}
+.link{background:none;border:0;color:var(--mut);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;padding:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <h1 id="hi">Oi!</h1>
+      <p class="date" id="date"></p>
+    </div>
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" id="fg" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/></svg>
+      <b id="pct">0/0</b>
+    </div>
+  </div>
+  <p class="msg" id="msg"></p>
+  <div id="list"></div>
+
+  <section class="add">
+    <h2>Nova tarefa</h2>
+    <div class="row">
+      <input type="text" id="name" placeholder="Ex.: Ler 20 minutos" maxlength="50" aria-label="Nome da tarefa">
+      <input type="time" id="time" value="16:00" aria-label="Horário">
+    </div>
+    <div class="emos" id="emos"></div>
+    <button class="go" id="addBtn">Adicionar à rotina</button>
+  </section>
+
+  <div class="foot">
+    <button class="link" id="theme">Trocar tema</button>
+    <button class="link" id="reset">Voltar à rotina inicial</button>
+  </div>
+</main>
+
+<script>
+const KEY='meudia-v1';
+const EMOS=['📚','🏃','🎮','🎸','🍎','💧','🧹','🛏️','📱','🎨','🧘','🐶'];
+const DEFAULT=[
+  {id:1,t:'Acordar e arrumar a cama',time:'07:00',e:'🛏️'},
+  {id:2,t:'Café da manhã',time:'07:30',e:'🍎'},
+  {id:3,t:'Escola ou estudos',time:'08:00',e:'📚'},
+  {id:4,t:'Almoço',time:'12:30',e:'🍽️'},
+  {id:5,t:'Lição de casa',time:'15:00',e:'✏️'},
+  {id:6,t:'Exercício ou esporte',time:'17:00',e:'🏃'},
+  {id:7,t:'Jantar com a família',time:'19:30',e:'🍝'},
+  {id:8,t:'Celular de lado e dormir',time:'22:00',e:'🌙'}
+];
+let S, emo=EMOS[0];
+function load(){
+  try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.tasks))return s}catch(e){}
+  return {tasks:JSON.parse(JSON.stringify(DEFAULT)),done:{},full:{}};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+S=load();
+const $=id=>document.getElementById(id);
+const dkey=d=>d.toLocaleDateString('sv');
+const todayK=()=>dkey(new Date());
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function streak(){
+  let n=0,d=new Date();
+  if(!S.full[dkey(d)])d.setDate(d.getDate()-1);
+  while(S.full[dkey(d)]){n++;d.setDate(d.getDate()-1)}
+  return n;
+}
+function toggle(id){
+  const k=todayK(),a=S.done[k]||(S.done[k]=[]);
+  const i=a.indexOf(id);
+  i>=0?a.splice(i,1):a.push(id);
+  const all=S.tasks.length&&S.tasks.every(t=>a.includes(t.id));
+  if(all)S.full[k]=true;else delete S.full[k];
+  save();render();
+}
+function render(){
+  const now=new Date(),k=todayK(),done=S.done[k]||[];
+  const h=now.getHours();
+  $('hi').textContent=h<12?'Bom dia!':h<18?'Boa tarde!':'Boa noite!';
+  $('date').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const tasks=[...S.tasks].sort((a,b)=>a.time.localeCompare(b.time));
+  const total=tasks.length,nd=tasks.filter(t=>done.includes(t.id)).length;
+  $('pct').textContent=nd+'/'+total;
+  $('fg').style.strokeDashoffset=263.9*(1-(total?nd/total:0));
+  $('ring').classList.toggle('full',total>0&&nd===total);
+  const st=streak();
+  const stTxt=st>0?` <span class="streak">· ${st} ${st===1?'dia seguido':'dias seguidos'} 🔥</span>`:'';
+  $('msg').innerHTML=(total===0?'Sua rotina está vazia. Adicione a primeira tarefa abaixo.':nd===total?'Dia completo! Você mandou bem 🎉':nd===0?'Vamos começar? Toque no círculo ao concluir cada tarefa.':`Faltam ${total-nd} para fechar o dia.`)+stTxt;
+  const hm=String(h).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const pending=tasks.filter(t=>!done.includes(t.id));
+  const nextT=pending.find(t=>t.time>=hm)||pending[0];
+  const groups=[['Manhã','var(--manha)',t=>t.time<'12:00'],['Tarde','var(--tarde)',t=>t.time>='12:00'&&t.time<'18:00'],['Noite','var(--noite)',t=>t.time>='18:00']];
+  $('list').innerHTML=groups.map(([nm,col,f])=>{
+    const items=tasks.filter(f);
+    return `<section class="sec"><h2><span class="dot" style="background:${col}"></span>${nm}</h2>`+
+      (items.length?items.map(t=>{
+        const d=done.includes(t.id);
+        return `<div class="task${d?' done':''}${nextT&&nextT.id===t.id?' next':''}">
+          <button class="chk" data-t="${t.id}" aria-label="${d?'Desmarcar':'Concluir'}: ${esc(t.t)}">${d?'✓':''}</button>
+          <span class="emo">${t.e}</span>
+          <div class="info"><div class="nm">${esc(t.t)}</div><div class="tm">${t.time}${nextT&&nextT.id===t.id?'<span class="tag">próxima</span>':''}</div></div>
+          <button class="del" data-d="${t.id}" aria-label="Remover ${esc(t.t)}">×</button></div>`}).join(''):`<p class="empty">Nada por aqui.</p>`)+`</section>`;
+  }).join('');
+}
+$('list').addEventListener('click',e=>{
+  const c=e.target.closest('[data-t]'),x=e.target.closest('[data-d]');
+  if(c)toggle(+c.dataset.t);
+  else if(x){S.tasks=S.tasks.filter(t=>t.id!==+x.dataset.d);save();render()}
+});
+function drawEmos(){
+  $('emos').innerHTML=EMOS.map(x=>`<button type="button" class="${x===emo?'on':''}" data-e="${x}" aria-label="Ícone ${x}">${x}</button>`).join('');
+}
+$('emos').addEventListener('click',e=>{const b=e.target.closest('[data-e]');if(b){emo=b.dataset.e;drawEmos()}});
+$('addBtn').addEventListener('click',()=>{
+  const n=$('name').value.trim(),t=$('time').value;
+  if(!n){$('name').focus();return}
+  S.tasks.push({id:Date.now(),t:n,time:t||'12:00',e:emo});
+  const k=todayK();if(S.full[k]){delete S.full[k]}
+  $('name').value='';save();render();
+});
+$('name').addEventListener('keydown',e=>{if(e.key==='Enter')$('addBtn').click()});
+$('reset').addEventListener('click',()=>{
+  if(confirm('Voltar à rotina inicial? Suas tarefas atuais serão apagadas.')){S={tasks:JSON.parse(JSON.stringify(DEFAULT)),done:{},full:{}};save();render()}
+});
+$('theme').addEventListener('click',()=>{
+  const r=document.documentElement;
+  r.dataset.theme=r.dataset.theme==='light'?'dark':'light';
+});
+drawEmos();render();
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+setInterval(render,60000);
+</script>
+</body>
+</html>
